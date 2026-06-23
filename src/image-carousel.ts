@@ -20,10 +20,11 @@ interface CarouselImage {
   caption: string
 }
 
-// "linux-commands.jpg" -> "Linux Commands"
+// "linux-commands.jpg" -> "Linux Commands"; "Linux/linux-commands.jpg" -> "Linux Commands"
 function filenameToCaption(filename: string): string {
   return filename
     .replace(/\.(jpg|jpeg|png|gif|webp)$/i, '')
+    .split('/').pop()!
     .split(/[-_]/)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
