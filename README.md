@@ -61,7 +61,35 @@ This project uses **pnpm**.
 ```bash
 pnpm install      # Install dependencies
 pnpm dev          # Dev server (localhost:5173)
-pnpm build        # Type-check + production build
+pnpm build        # Type-check + production build (outputs to dist/)
 pnpm lint         # ESLint
 pnpm preview      # Preview production build
+```
+
+## Deploying
+
+`pnpm build` emits a self-contained static bundle in `dist/` (HTML, JS, CSS,
+images, and the generated `manifest.json`). The bundle uses absolute asset
+paths, so serve it from a domain **root**.
+
+### Docker
+
+The repo ships a multi-stage [Dockerfile](Dockerfile) that builds the bundle and
+serves it with nginx:
+
+```bash
+docker build -t carousel .
+docker run -d -p 8080:80 carousel   # http://localhost:8080
+```
+
+### Published image (GHCR)
+
+A [GitHub Actions workflow](.github/workflows/docker-publish.yml) builds and
+pushes the image to GitHub Container Registry on every push to `main` (tag
+`latest`) and on `v*` git tags (versioned releases). Pull and run it on any
+Docker host:
+
+```bash
+docker pull ghcr.io/marcoguastalli/carousel:latest
+docker run -d -p 80:80 ghcr.io/marcoguastalli/carousel:latest
 ```
