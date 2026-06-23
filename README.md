@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# &lt;image-carousel&gt;
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A reusable, framework-agnostic image carousel **web component**. No runtime
+dependencies — drop it into any HTML, React, Vue, or legacy page.
 
-Currently, two official plugins are available:
+```html
+<script type="module" src="/assets/image-carousel.js"></script>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+<image-carousel sort autoplay interval="3000"></image-carousel>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Attributes
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Attribute  | Type    | Default                 | Description                                   |
+|------------|---------|-------------------------|-----------------------------------------------|
+| `interval` | number  | `2000`                  | Auto-play interval in ms.                     |
+| `autoplay` | boolean | off                     | Start auto-playing on load.                   |
+| `sort`     | boolean | off                     | Sort images by caption (A→Z).                 |
+| `manifest` | string  | `/images/manifest.json` | URL of a JSON array of filenames.             |
+| `base`     | string  | `/images/`              | Path prepended to each filename.              |
+| `images`   | string  | —                       | Comma-separated filenames (skips the manifest).|
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+All attributes are reactive — changing one re-renders the carousel.
+
+Supplying images explicitly (no build step needed):
+
+```html
+<image-carousel base="/pics/" images="one.jpg, two.png, three.webp"></image-carousel>
+```
+
+## Events
+
+Fires `change` (bubbles) on slide change: `e.detail.index`.
+
+## Styling
+
+The component uses Shadow DOM, so outside CSS can't leak in. Override the
+accent colors via CSS custom properties on the host:
+
+```css
+image-carousel {
+  --ic-accent: #43a047;
+  --ic-accent-dark: #1b5e20;
+  --ic-bar-bg: #1a1a1a;
+}
+```
+
+## Image discovery
+
+By default the component fetches `manifest.json` — a list of filenames
+generated at build/dev time by the Vite `image-manifest` plugin
+(see [vite.config.ts](vite.config.ts)). Drop `.jpg/.jpeg/.png/.gif/.webp`
+files into `public/images/` and the manifest regenerates automatically in dev.
+Filenames become captions (extension stripped, hyphens/underscores → spaces,
+title-cased).
+
+## Commands
+
+This project uses **pnpm**.
+
+```bash
+pnpm install      # Install dependencies
+pnpm dev          # Dev server (localhost:5173)
+pnpm build        # Type-check + production build
+pnpm lint         # ESLint
+pnpm preview      # Preview production build
 ```

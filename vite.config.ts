@@ -2,7 +2,6 @@ import { readdirSync, writeFileSync } from 'fs'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import type { Plugin } from 'vite'
-import react from '@vitejs/plugin-react'
 
 // Automatically find all HTML entry points in the project root
 const htmlEntries = Object.fromEntries(
@@ -52,11 +51,6 @@ function imageManifestPlugin(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler']],
-      },
-    }),
     imageManifestPlugin(),
   ],
   build: {
