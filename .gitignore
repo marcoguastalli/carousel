@@ -23,3 +23,7 @@ public/images/manifest.json
 *.njsproj
 *.sln
 *.sw?
+
+# Public Media Asset
+public/images
+manifest.json
