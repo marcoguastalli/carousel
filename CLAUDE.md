@@ -24,9 +24,11 @@ This is a reusable, framework-agnostic **web component** (no runtime dependencie
 - [src/main.ts](src/main.ts) — Demo entry; only imports `image-carousel.ts` to register the element.
 - [index.html](index.html) — Demo page; uses `<image-carousel sort>`.
 
+There is no React in this project — do not add it.
+
 **Image discovery flow:** The Vite config ([vite.config.ts](vite.config.ts)) includes a custom `imageManifestPlugin` that scans `public/images/` at build-start and during dev-server watch events, writing a `manifest.json` file listing all image filenames. At runtime the component fetches the manifest (default `/images/manifest.json`, override with the `manifest` attribute) — this avoids Vite's asset hashing while still enabling hot-reload when images are added/removed. Alternatively, pass an explicit `images="a.jpg, b.png"` attribute to skip the fetch entirely.
 
-**Adding images:** Drop `.jpg`, `.jpeg`, `.png`, `.gif`, or `.webp` files into `public/images/`. The manifest is regenerated automatically in dev mode. Filenames are converted to captions by stripping the extension and replacing hyphens/underscores with spaces (title-cased).
+**Adding images:** Drop `.jpg`, `.jpeg`, `.png`, `.gif`, or `.webp` files anywhere under `public/images/`. The scan is **recursive**; manifest entries are paths relative to `public/images/` (forward slashes, e.g. `Linux/linux-commands.jpg`), which the component appends to its `base`. The manifest is regenerated automatically in dev mode. Captions are derived from the **basename** (subdirectory stripped), extension removed, hyphens/underscores → spaces, title-cased.
 
 **Shared header:** [public/header.js](public/header.js) is a vanilla JS module loaded via `<script type="module">` in [index.html](index.html). It programmatically inserts a `<header>` and injects shared styles from [public/styles.css](public/styles.css).
 
