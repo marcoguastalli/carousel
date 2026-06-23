@@ -74,22 +74,32 @@ paths, so serve it from a domain **root**.
 
 ### Docker
 
-The repo ships a multi-stage [Dockerfile](Dockerfile) that builds the bundle and
-serves it with nginx:
+The repo ships a multi-stage [Dockerfile](Dockerfile) that builds the app shell
+and serves it with nginx. **Images are content, not code** — they are *not*
+baked into the image. Mount a folder of images as a volume at
+`/usr/share/nginx/html/images`; a startup script scans it (recursively) and
+generates the manifest, so the carousel picks up whatever you mount:
 
 ```bash
 docker build -t carousel .
-docker run -d -p 8080:80 carousel   # http://localhost:8080
+docker run -d -p 8080:80 \
+  -v "$PWD/public/images:/usr/share/nginx/html/images:ro" \
+  carousel                              # http://localhost:8080
 ```
+
+The mount can be read-only (`:ro`) — the generated manifest is written outside
+the volume. Without a mount, the carousel simply renders empty.
 
 ### Published image (GHCR)
 
 A [GitHub Actions workflow](.github/workflows/docker-publish.yml) builds and
 pushes the image to GitHub Container Registry on every push to `main` (tag
 `latest`) and on `v*` git tags (versioned releases). Pull and run it on any
-Docker host:
+Docker host, supplying your own images via the volume:
 
 ```bash
 docker pull ghcr.io/marcoguastalli/carousel:latest
-docker run -d -p 80:80 ghcr.io/marcoguastalli/carousel:latest
+docker run -d -p 80:80 \
+  -v /path/to/your/images:/usr/share/nginx/html/images:ro \
+  ghcr.io/marcoguastalli/carousel:latest
 ```

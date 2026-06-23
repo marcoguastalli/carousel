@@ -3,3 +3,7 @@ dist
 .git
 .github
 *.log
+
+# Images are content, not code — never bake them into the image.
+# They are provided at runtime via a volume mount (see Dockerfile).
+public/images/
