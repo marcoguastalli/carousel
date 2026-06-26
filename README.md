@@ -103,3 +103,9 @@ docker run -d -p 80:80 \
   -v /path/to/your/images:/usr/share/nginx/html/images:ro \
   ghcr.io/marcoguastalli/carousel:latest
 ```
+
+```bash
+docker run --rm -p 8090:80 --platform linux/amd64 \
+    -v "/path/to/your/images:/usr/share/nginx/html/images:ro" \
+    ghcr.io/marcoguastalli/carousel:latest
+```
