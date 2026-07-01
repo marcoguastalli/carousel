@@ -16,7 +16,7 @@ COPY . .
 RUN pnpm build
 
 # ---- Runtime stage: serve the static bundle with nginx ----
-FROM nginx:alpine AS runtime
+FROM nginx:1.26.3-alpine AS runtime
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # nginx serves the manifest from a generated file, not the baked placeholder
